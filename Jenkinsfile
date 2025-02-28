@@ -18,8 +18,16 @@ pipeline {
         }
         stage('Deploy') {
             steps {
+                // Run the deliver.sh script to start the application
                 sh './jenkins/scripts/deliver.sh'
-                input message: 'Sudah selesai menggunakan React App? (Klik "Proceed" untuk mengakhiri)'
+
+                // Display a message to let you know Jenkins is "waiting" for 1 minute
+                echo 'Aplikasi berhasil di-deploy. Menunggu 1 menit untuk pengujian...'
+
+                // Pause the pipeline execution for 60 seconds
+                sh 'sleep 60'
+
+                // After 1 minute, stop the application
                 sh './jenkins/scripts/kill.sh'
             }
         }
