@@ -14,6 +14,12 @@ node {
             sh './jenkins/scripts/test.sh'
         }
 
+        // Stage: Manual Approval
+        stage('Manual Approval') {
+            // Prompt user to continue to Deploy stage
+            input message: 'Lanjutkan ke tahap Deploy?', ok: 'Proceed'
+        }
+
         // Stage: Deploy
         stage('Deploy') {
             // Run the deliver.sh script to start the application
