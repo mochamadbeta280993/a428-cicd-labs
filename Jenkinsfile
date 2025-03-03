@@ -1,12 +1,14 @@
-node {
-    // Pull and run the specified Docker container, exposing port 3000
+node { 
+    // Run inside a Node.js container with root access
     docker.image('node:16-buster-slim').inside('--user root -p 3000:3000') {
 
+        // Define environment variables
         environment {
-            HEROKU_API_KEY = 'HRKU-89e642bc-f4c6-4d5e-bf3a-f456afb1826c'
+            HEROKU_API_KEY = 'HRKU-89e642bc-f4c6-4d5e-bf3a-f456afb1826c' // Heroku API Key
+            HEROKU_APP_NAME = 'react-app-jenkins' // Heroku App Name
         }
 
-        // Stage: Install Heroku CLI
+        // Install necessary dependencies and Heroku CLI
         stage('Install Heroku CLI') {
             sh '''
             apt-get update && apt-get install -y curl
@@ -16,43 +18,37 @@ node {
             '''
         }
 
-        // Stage: Build
+        // Install project dependencies
         stage('Build') {
-            // Install project dependencies using npm
             sh 'npm install'
         }
 
-        // Stage: Test
+        // Run tests
         stage('Test') {
-            // Execute the test script stored in ./jenkins/scripts/test.sh
             sh './jenkins/scripts/test.sh'
         }
 
-        // Stage: Manual Approval
+        // Pause for manual approval before deploying
         stage('Manual Approval') {
-            // Prompt user to continue to Deploy stage
             input message: 'Lanjutkan ke tahap Deploy?', ok: 'Proceed'
         }
 
-        // Stage: Deploy to Heroku
+        // Deploy the React app to Heroku
         stage('Deploy to Heroku') {
-            //
-            HEROKU_APP_NAME = 'react-app-jenkins'
+            sh '''
+            export PATH="/usr/local/bin:$PATH" // Ensure Heroku CLI is in PATH
+            echo $HEROKU_API_KEY | heroku auth:token // Authenticate with Heroku
+            heroku git:remote -a $HEROKU_APP_NAME // Set Heroku Git remote
+            git add . // Stage changes
+            git commit -m "Deploy from Jenkins" // Commit changes
+            git push heroku main // Push to Heroku
+            '''
 
-            // Authenticate with Heroku
-            sh 'heroku git:remote -a $HEROKU_APP_NAME'
-            sh 'git add .'
-            sh 'git commit -m "Deploy from Jenkins"'
-            sh 'git push heroku main'
-
-            // Display a message indicating a 1-minute wait for testing
             echo 'Aplikasi berhasil di-deploy ke Heroku. Menunggu 1 menit untuk pengujian...'
 
-            // Pause the pipeline execution for 60 seconds
-            sh 'sleep 60'
+            sh 'sleep 60' // Wait for 1 minute before checking logs
 
-            // Check logs for issues
-            sh 'heroku logs --tail -a $HEROKU_APP_NAME'
+            sh 'heroku logs --tail -a $HEROKU_APP_NAME' // Display Heroku logs
         }
     }
 }
