@@ -1,6 +1,6 @@
 node {
     // Pull and run the specified Docker container, exposing port 3000
-    docker.image('node:16-buster-slim').inside('-p 3000:3000') {
+    docker.image('node:16-buster-slim').inside('--user root -p 3000:3000') {
 
         environment {
             HEROKU_API_KEY = 'HRKU-89e642bc-f4c6-4d5e-bf3a-f456afb1826c'
