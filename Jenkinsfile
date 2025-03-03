@@ -39,7 +39,8 @@ node {
             git add .
             git commit -m "Deploy from Jenkins" || echo "No changes to commit"
             
-            # Ensure main branch exists and force push
+            # Ensure we are on a branch before renaming
+            git checkout -b temp-branch
             git branch -M main
             git push -f heroku main
             '''
