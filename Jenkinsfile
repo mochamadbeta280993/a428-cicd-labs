@@ -49,6 +49,9 @@ node {
                         heroku git:remote -a react-app-jenkins
                     fi
 
+                    # Explicitly switch Git authentication to use SSH instead of HTTPS
+                    git remote set-url heroku git@heroku.com:react-app-jenkins.git
+
                     # Push code to Heroku
                     git checkout -B main
                     git push -f heroku main
