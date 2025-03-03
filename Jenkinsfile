@@ -13,7 +13,6 @@ node {
             '''
         }
 
-"""
         stage('Build') {
             // Install dependencies (and build if needed)
             sh 'npm install'
@@ -30,7 +29,6 @@ node {
             // Simple manual gate before deployment
             input message: 'Lanjutkan ke tahap Deploy?', ok: 'Proceed'
         }
-"""
 
         stage('Deploy to Heroku') {
             // The crucial part
