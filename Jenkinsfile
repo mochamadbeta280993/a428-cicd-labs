@@ -31,7 +31,17 @@ node {
             echo "machine git.heroku.com login=heroku password=$HEROKU_API_KEY" >> ~/.netrc
             chmod 600 ~/.netrc
 
-            heroku git:remote -a react-app-jenkins
+            # Ensure we are in the Jenkins workspace
+            cd /var/jenkins_home/workspace/react-app
+
+            # Initialize Git if not already initialized
+            if [ ! -d .git ]; then
+                git init
+                git remote add heroku https://git.heroku.com/react-app-jenkins.git
+            else
+                git remote set-url heroku https://git.heroku.com/react-app-jenkins.git
+            fi
+
             git config --global --add safe.directory /var/jenkins_home/workspace/react-app
             git config --global user.email "moch.beta@gmail.com"
             git config --global user.name "mochamdbeta289893"
@@ -39,8 +49,8 @@ node {
             git add .
             git commit -m "Deploy from Jenkins" || echo "No changes to commit"
             
-            # Ensure we are on a branch before renaming
-            git checkout -b temp-branch
+            # Ensure we are on a valid branch before renaming
+            git checkout -b temp-branch || git checkout temp-branch
             git branch -M main
             git push -f heroku main
             '''
