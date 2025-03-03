@@ -1,12 +1,13 @@
 node { 
     docker.image('node:16-buster-slim').inside('--user root -p 3000:3000') {
 
-        stage('Install Heroku CLI') {
+        stage('Install Dependencies') {
             sh '''
-            apt-get update && apt-get install -y curl
+            apt-get update && apt-get install -y curl git
             curl https://cli-assets.heroku.com/install.sh | sh
             export PATH="/usr/local/bin:$PATH"
             heroku --version
+            git --version
             '''
         }
 
