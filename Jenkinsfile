@@ -37,17 +37,15 @@ node {
                 export PATH="/usr/local/bin:$PATH"
 
                 # ---- HARDCODED Heroku API Key (for personal use only) ----
-                HEROKU_API_KEY="HRKU-REPLACE-WITH-YOUR-REAL-KEY"
+                HEROKU_API_KEY="HRKU-89e642bc-f4c6-4d5e-bf3a-f456afb1826c"
 
-                # Configure .netrc for Heroku authentication
-                echo "machine api.heroku.com login=heroku password=$HEROKU_API_KEY" > ~/.netrc
-                echo "machine git.heroku.com login=heroku password=$HEROKU_API_KEY" >> ~/.netrc
-                chmod 600 ~/.netrc
+                # Authenticate Heroku CLI directly using the API key
+                heroku login -i --api-key=$HEROKU_API_KEY
 
                 # Move into the Jenkins workspace (already mounted in Docker)
                 cd $WORKSPACE
 
-                # Make sure we have a .git folder. If not, initialize and do an initial commit.
+                # Ensure Git is initialized and configured
                 if [ ! -d .git ]; then
                   git init
                   git add .
@@ -59,18 +57,25 @@ node {
                 git config --global user.name "mochamdbeta289893"
                 git config --global --add safe.directory $WORKSPACE
 
-                # Ensure the 'heroku' remote is set to the correct URL
+                # Add Heroku remote using SSH instead of HTTPS (recommended for Heroku)
+                HEROKU_APP_NAME="react-app-jenkins"
+                HEROKU_GIT_URL="git@heroku.com:$HEROKU_APP_NAME.git"
+
                 if ! git remote | grep -q heroku; then
-                  git remote add heroku https://git.heroku.com/react-app-jenkins.git
+                  git remote add heroku $HEROKU_GIT_URL
                 else
-                  git remote set-url heroku https://git.heroku.com/react-app-jenkins.git
+                  git remote set-url heroku $HEROKU_GIT_URL
                 fi
+
+                # Ensure SSH keys are set up (simplified for this example)
+                # Note: In a production environment, you should use SSH key management
+                ssh-keyscan -t rsa git.heroku.com >> ~/.ssh/known_hosts
 
                 # Force-create (or switch to) the 'main' branch
                 git checkout -B main
 
-                # Push to Heroku, overwriting if needed
-                git push -f heroku main
+                # Push to Heroku
+                git push heroku main
             '''
 
             // Wait and check logs
