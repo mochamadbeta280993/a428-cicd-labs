@@ -25,6 +25,13 @@ node {
             input message: 'Lanjutkan ke tahap Deploy?', ok: 'Proceed'
         }
 
+        // Stage: Install Heroku CLI
+        stage('Install Heroku CLI') {
+            steps {
+                sh 'curl https://cli-assets.heroku.com/install.sh | sh'
+            }
+        }
+
         // Stage: Deploy to Heroku
         stage('Deploy to Heroku') {
             // Authenticate with Heroku
