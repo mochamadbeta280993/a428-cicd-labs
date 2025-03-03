@@ -28,7 +28,6 @@ node {
         // Stage: Deploy to Heroku
         stage('Deploy to Heroku') {
             // Authenticate with Heroku
-            sh 'export PATH=$PATH:/usr/local/bin'
             sh 'heroku git:remote -a $HEROKU_APP_NAME'
             sh 'git add .'
             sh 'git commit -m "Deploy from Jenkins"'
