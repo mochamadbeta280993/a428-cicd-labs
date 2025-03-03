@@ -37,11 +37,11 @@ node {
             git config --global user.name "mochamdbeta289893"
 
             git add .
-            git commit -m "Deploy from Jenkins"
+            git commit -m "Deploy from Jenkins" || echo "No changes to commit"
             
-            # Ensure the main branch exists
+            # Ensure main branch exists and force push
             git branch -M main
-            git push -u heroku main
+            git push -f heroku main
             '''
 
             echo 'Aplikasi berhasil di-deploy ke Heroku. Menunggu 1 menit untuk pengujian...'
