@@ -25,7 +25,11 @@ node {
         stage('Deploy to Heroku') {
             sh '''
             export PATH="/usr/local/bin:$PATH"
-            echo HRKU-89e642bc-f4c6-4d5e-bf3a-f456afb1826c | heroku auth:token
+            HEROKU_API_KEY="HRKU-89e642bc-f4c6-4d5e-bf3a-f456afb1826c"
+            echo "machine api.heroku.com login=heroku password=$HEROKU_API_KEY" > ~/.netrc
+            echo "machine git.heroku.com login=heroku password=$HEROKU_API_KEY" >> ~/.netrc
+            chmod 600 ~/.netrc
+
             heroku git:remote -a react-app-jenkins
             git add .
             git commit -m "Deploy from Jenkins"
