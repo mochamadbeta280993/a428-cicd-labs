@@ -37,19 +37,31 @@ node {
 
                 HEROKU_API_KEY="HRKU-89e642bc-f4c6-4d5e-bf3a-f456afb1826c"
 
-                echo "machine api.heroku.com login=heroku password=$HEROKU_API_KEY" > $HOME/.netrc
-                echo "machine git.heroku.com login=heroku password=$HEROKU_API_KEY" >> $HOME/.netrc
-                chmod 600 $HOME/.netrc
+                # Authenticate Heroku CLI explicitly
+                echo $HEROKU_API_KEY | heroku auth:token
+
+                # Ensure the correct Git credentials are set
+                echo "machine api.heroku.com login=heroku password=$HEROKU_API_KEY" > ~/.netrc
+                echo "machine git.heroku.com login=heroku password=$HEROKU_API_KEY" >> ~/.netrc
+                chmod 600 ~/.netrc
+
+                # Check Heroku authentication
+                heroku whoami
+
+                # Mark Jenkins workspace as safe
+                git config --global --add safe.directory "$WORKSPACE"
 
                 cd $WORKSPACE
 
-                # FIX: Mark the Jenkins workspace as a safe directory for Git
-                git config --global --add safe.directory "$WORKSPACE"
-
+                # Set up Heroku Git remote
                 if ! git remote | grep -q heroku; then
                     heroku git:remote -a react-app-jenkins
                 fi
 
+                # Use SSH instead of HTTPS for Git operations (optional)
+                git remote set-url heroku git@heroku.com:react-app-jenkins.git
+
+                # Push the code
                 git checkout -B main
                 git push -f heroku main
             '''
