@@ -43,6 +43,9 @@ node {
 
                 cd $WORKSPACE
 
+                # FIX: Mark the Jenkins workspace as a safe directory for Git
+                git config --global --add safe.directory "$WORKSPACE"
+
                 if ! git remote | grep -q heroku; then
                     heroku git:remote -a react-app-jenkins
                 fi
