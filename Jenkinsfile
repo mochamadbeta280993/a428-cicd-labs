@@ -33,6 +33,9 @@ node {
 
             heroku git:remote -a react-app-jenkins
             git config --global --add safe.directory /var/jenkins_home/workspace/react-app
+            git config --global user.email "moch.beta@gmail.com"
+            git config --global user.name "mochamadbeta280993"
+
             git add .
             git commit -m "Deploy from Jenkins"
             git push heroku main
