@@ -4,7 +4,6 @@ node {
 
         environment {
             HEROKU_API_KEY = 'HRKU-89e642bc-f4c6-4d5e-bf3a-f456afb1826c'
-            HEROKU_APP_NAME = 'react-app-jenkins'
         }
 
         // Stage: Install Heroku CLI
@@ -37,6 +36,9 @@ node {
 
         // Stage: Deploy to Heroku
         stage('Deploy to Heroku') {
+            //
+            HEROKU_APP_NAME = 'react-app-jenkins'
+
             // Authenticate with Heroku
             sh 'heroku git:remote -a $HEROKU_APP_NAME'
             sh 'git add .'
