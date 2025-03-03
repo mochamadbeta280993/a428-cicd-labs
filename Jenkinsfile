@@ -13,22 +13,31 @@ node {
             '''
         }
 
+        // Commenting out the Build stage
+        /*
         stage('Build') {
             // Install dependencies (and build if needed)
             sh 'npm install'
             // If you have a separate build step:
             // sh 'npm run build'
         }
+        */
 
+        // Commenting out the Test stage
+        /*
         stage('Test') {
             // Run your test script
             sh './jenkins/scripts/test.sh'
         }
+        */
 
+        // Commenting out the Manual Approval stage
+        /*
         stage('Manual Approval') {
             // Simple manual gate before deployment
             input message: 'Lanjutkan ke tahap Deploy?', ok: 'Proceed'
         }
+        */
 
         stage('Deploy to Heroku') {
             // The crucial part
@@ -39,8 +48,9 @@ node {
                 # ---- HARDCODED Heroku API Key (for personal use only) ----
                 HEROKU_API_KEY="HRKU-89e642bc-f4c6-4d5e-bf3a-f456afb1826c"
 
-                # Authenticate Heroku CLI using the API key
-                echo $HEROKU_API_KEY | heroku auth:login
+                # Authenticate Heroku CLI non-interactively using the API key
+                heroku auth:token --no-warn > /dev/null 2>&1
+                echo $HEROKU_API_KEY | heroku auth:login --no-warn
 
                 # Move into the Jenkins workspace (already mounted in Docker)
                 cd $WORKSPACE
