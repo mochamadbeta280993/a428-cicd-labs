@@ -4,7 +4,7 @@ node {
 
         stage('Install Dependencies') {
             sh '''
-                apt-get update && apt-get install -y curl git
+                apt-get update && apt-get install -y curl git openssh-client
                 # Install the Heroku CLI
                 curl https://cli-assets.heroku.com/install.sh | sh
                 export PATH="/usr/local/bin:$PATH"
@@ -39,8 +39,8 @@ node {
                 # ---- HARDCODED Heroku API Key (for personal use only) ----
                 HEROKU_API_KEY="HRKU-89e642bc-f4c6-4d5e-bf3a-f456afb1826c"
 
-                # Authenticate Heroku CLI directly using the API key
-                heroku login -i --api-key=$HEROKU_API_KEY
+                # Authenticate Heroku CLI using the API key
+                echo $HEROKU_API_KEY | heroku auth:login
 
                 # Move into the Jenkins workspace (already mounted in Docker)
                 cd $WORKSPACE
@@ -57,7 +57,7 @@ node {
                 git config --global user.name "mochamdbeta289893"
                 git config --global --add safe.directory $WORKSPACE
 
-                # Add Heroku remote using SSH instead of HTTPS (recommended for Heroku)
+                # Add Heroku remote using SSH
                 HEROKU_APP_NAME="react-app-jenkins"
                 HEROKU_GIT_URL="git@heroku.com:$HEROKU_APP_NAME.git"
 
@@ -67,8 +67,7 @@ node {
                   git remote set-url heroku $HEROKU_GIT_URL
                 fi
 
-                # Ensure SSH keys are set up (simplified for this example)
-                # Note: In a production environment, you should use SSH key management
+                # Ensure SSH keys are set up
                 ssh-keyscan -t rsa git.heroku.com >> ~/.ssh/known_hosts
 
                 # Force-create (or switch to) the 'main' branch
