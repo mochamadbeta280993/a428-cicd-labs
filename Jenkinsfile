@@ -7,6 +7,14 @@ node {
             HEROKU_APP_NAME = 'react-app-jenkins'
         }
 
+        // Stage: Install Heroku CLI
+        stage('Install Heroku CLI') {
+            sh '''
+            curl https://cli-assets.heroku.com/install.sh | sh
+            heroku --version
+            '''
+        }
+
         // Stage: Build
         stage('Build') {
             // Install project dependencies using npm
