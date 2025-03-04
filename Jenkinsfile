@@ -2,14 +2,6 @@ node {
     docker.image('node:16-buster-slim').inside('--user root -p 3000:3000') {
 
         withCredentials([string(credentialsId: 'HEROKU_API_KEY', variable: 'HEROKU_API_KEY')]) {
-
-            stage('Install Dependencies') {
-                sh '''
-                    apt-get update && apt-get install -y curl git
-                    curl https://cli-assets.heroku.com/install.sh | sh
-                '''
-            }
-
             stage('Build') {
                 sh 'npm install'
             }
