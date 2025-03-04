@@ -29,11 +29,9 @@ node {
                     chmod 600 ~/.netrc
 
                     chown -R $(id -u):$(id -g) "$WORKSPACE"
+                    git branch -a
                     heroku git:remote -a react-app-jenkins
-
-                    git branch -vv
-
-                    git push heroku react-app:main
+                    git push heroku main
                 '''
             }
         }
