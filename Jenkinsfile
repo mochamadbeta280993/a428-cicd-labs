@@ -29,10 +29,8 @@ node {
                     chmod 600 ~/.netrc
 
                     chown -R $(id -u):$(id -g) "$WORKSPACE"
-                    export GIT_TERMINAL_PROMPT=0
-                    export GIT_CURL_VERBOSE=1
                     heroku git:remote -a react-app-jenkins
-                    git push heroku main
+                    git push https://heroku:$HEROKU_API_KEY@git.heroku.com/react-app-jenkins.git main
                 '''
             }
         }
