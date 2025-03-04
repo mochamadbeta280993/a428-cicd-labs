@@ -23,11 +23,6 @@ node {
 
             stage('Deploy to Heroku') {
                 sh '''
-                    # Set up API key authentication (Non-Interactive Login)
-                    echo "machine api.heroku.com login=heroku password=$HEROKU_API_KEY" > ~/.netrc
-                    echo "machine git.heroku.com login=heroku password=$HEROKU_API_KEY" >> ~/.netrc
-                    chmod 600 ~/.netrc
-
                     chown -R $(id -u):$(id -g) "$WORKSPACE"
                     heroku git:remote -a react-app-jenkins
                     git push https://heroku:$HEROKU_API_KEY@git.heroku.com/react-app-jenkins.git main
