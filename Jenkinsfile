@@ -30,7 +30,8 @@ node {
 
                     chown -R $(id -u):$(id -g) "$WORKSPACE"
                     heroku git:remote -a react-app-jenkins
-                    git branch -a
+                    git fetch --all
+                    git checkout -b react-app origin/react-app || git checkout react-app
                     git push heroku react-app:main
                 '''
             }
