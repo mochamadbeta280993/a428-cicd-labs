@@ -28,11 +28,9 @@ node {
                     echo "machine git.heroku.com login=heroku password=$HEROKU_API_KEY" >> ~/.netrc
                     chmod 600 ~/.netrc
 
-                    cat ~/.netrc
-                    ls -la ~/.netrc
-
                     chown -R $(id -u):$(id -g) "$WORKSPACE"
-                    git branch -a
+                    export GIT_TERMINAL_PROMPT=0
+                    export GIT_CURL_VERBOSE=1
                     heroku git:remote -a react-app-jenkins
                     git push heroku main
                 '''
