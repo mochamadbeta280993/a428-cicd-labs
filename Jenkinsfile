@@ -14,6 +14,13 @@ node {
                 input message: 'Lanjutkan ke tahap Deploy?', ok: 'Proceed'
             }
 
+            stage('Installing Dependencies') {
+                sh '''
+                    apt-get update && apt-get install -y curl git
+                    curl https://cli-assets.heroku.com/install.sh | sh
+                '''
+            }            
+
             stage('Deploy to Heroku') {
                 sh '''
                     # Set up API key authentication (Non-Interactive Login)
@@ -21,8 +28,7 @@ node {
                     echo "machine git.heroku.com login=heroku password=$HEROKU_API_KEY" >> ~/.netrc
                     chmod 600 ~/.netrc
 
-                    apt-get update && apt-get install -y curl git
-                    curl https://cli-assets.heroku.com/install.sh | sh
+                    chown -R $(id -u):$(id -g) "$WORKSPACE"
                     heroku git:remote -a react-app-jenkins
                 '''
             }
