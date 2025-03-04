@@ -30,6 +30,7 @@ node {
 
                     chown -R $(id -u):$(id -g) "$WORKSPACE"
                     heroku git:remote -a react-app-jenkins
+                    git remote -v
                     git push heroku main
                 '''
             }
