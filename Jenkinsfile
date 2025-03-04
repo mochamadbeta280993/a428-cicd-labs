@@ -31,6 +31,7 @@ node {
                     chown -R $(id -u):$(id -g) "$WORKSPACE"
                     git branch -a
                     heroku git:remote -a react-app-jenkins
+                    git remote add heroku git@heroku.com:react-app-jenkins.git
                     git push heroku main
                 '''
             }
