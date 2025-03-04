@@ -31,12 +31,7 @@ node {
                     chown -R $(id -u):$(id -g) "$WORKSPACE"
                     heroku git:remote -a react-app-jenkins
 
-                    echo "Current Working Directory:"
-                    pwd
-                    echo "List of Files and Folders:"
-                    ls -la
-                    echo "Checking for .git Directory:"
-                    ls -la .git || echo ".git directory not found!"
+                    git branch -vv
 
                     git push heroku react-app:main
                 '''
