@@ -25,6 +25,11 @@ node {
                 sh '''
                     chown -R $(id -u):$(id -g) "$WORKSPACE"
                     heroku git:remote -a react-app-jenkins
+
+                    # Set OpenSSL legacy mode before pushing
+                    heroku config:set NODE_OPTIONS=--openssl-legacy-provider -a react-app-jenkins
+
+                    # Push to Heroku
                     git push https://heroku:$HEROKU_API_KEY@git.heroku.com/react-app-jenkins.git main
                 '''
             }
