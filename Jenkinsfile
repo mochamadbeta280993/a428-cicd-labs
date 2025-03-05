@@ -35,8 +35,8 @@ node {
                 sh 'curl https://cli-assets.heroku.com/install.sh | sh'
             }
 
-            // **Stage 5: Deploy to Heroku**
-            stage('Deploy to Heroku') {
+            // **Stage 5: Deploy**
+            stage('Deploy') {
                 // Change ownership of workspace
                 sh 'chown -R $(id -u):$(id -g) "$WORKSPACE"'
 
@@ -51,10 +51,7 @@ node {
 
                 // Start the application in Heroku
                 sh 'heroku ps:scale web=1 -a react-app-jenkins'
-            }
 
-            // **Stage 6: Wait and Kill**
-            stage('Wait and Kill') {
                 // Pause the pipeline execution for 1 minute
                 sh 'sleep 60'
 
