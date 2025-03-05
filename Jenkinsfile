@@ -51,11 +51,14 @@ node {
 
                 // Start the application in Heroku
                 sh 'heroku ps:scale web=1 -a react-app-jenkins'
+            }
 
+            // **Stage 6: Wait and Kill**
+            stage('Wait and Kill') {
                 // Pause the pipeline execution for 1 minute
                 sh 'sleep 60'
 
-                // After waiting for 1 minute, stop the application in Heroku
+                // Stop the application in Heroku
                 sh 'heroku ps:scale web=0 -a react-app-jenkins'
             }
         }
