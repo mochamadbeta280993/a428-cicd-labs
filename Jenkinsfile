@@ -7,18 +7,14 @@ node {
             
             // **Stage 1: Build**
             stage('Build') {
-                sh '''
-                    # Install project dependencies from package.json
-                    npm install
-                '''
+                // Install project dependencies
+                sh 'npm install'
             }
 
             // **Stage 2: Test**
             stage('Test') {
-                sh '''
-                    # Run the test script (test.sh) inside the jenkins/scripts/ directory
-                    ./jenkins/scripts/test.sh
-                '''
+                // Run the test script
+                sh './jenkins/scripts/test.sh'
             }
 
             // **Stage 3: Manual Approval**
@@ -29,42 +25,38 @@ node {
 
             // **Stage 4: Installing Dependencies**
             stage('Installing Dependencies') {
-                sh '''
-                    # Update the package lists
-                    apt-get update 
+                // Update the package lists
+                sh 'apt-get update'
 
-                    # Install curl and Git, required for interacting with Heroku
-                    apt-get install -y curl git
-
-                    # Install the Heroku CLI (Command Line Interface)
-                    curl https://cli-assets.heroku.com/install.sh | sh
-                '''
+                // Install curl and Git
+                sh 'apt-get install -y curl git'
+                
+                // Install the Heroku CLI
+                sh 'curl https://cli-assets.heroku.com/install.sh | sh'
             }
 
             // **Stage 5: Deploy to Heroku**
             stage('Deploy to Heroku') {
-                sh '''
-                    # Change ownership of the workspace to the current Jenkins user
-                    chown -R $(id -u):$(id -g) "$WORKSPACE"
+                // Change ownership of workspace
+                sh 'chown -R $(id -u):$(id -g) "$WORKSPACE"'
 
-                    # Set the Heroku Git remote repository
-                    heroku git:remote -a react-app-jenkins
+                // Set the Heroku Git remote
+                sh 'heroku git:remote -a react-app-jenkins'
 
-                    # Set OpenSSL legacy mode before pushing
-                    heroku config:set NODE_OPTIONS=--openssl-legacy-provider -a react-app-jenkins
+                // Set OpenSSL legacy mode before pushing
+                sh 'heroku config:set NODE_OPTIONS=--openssl-legacy-provider -a react-app-jenkins'
 
-                    # Push to Heroku
-                    git push https://heroku:$HEROKU_API_KEY@git.heroku.com/react-app-jenkins.git main
-					
-					# Start the application in Heroku
-					heroku ps:scale web=1 -a react-app-jenkins
-					
-					# Pause the pipeline execution for 1 minute
-					sleep 60
+                // Push to Heroku
+                sh 'git push https://heroku:$HEROKU_API_KEY@git.heroku.com/react-app-jenkins.git main'
 
-					# After waiting for 1 minute, stop the application in Heroku
-					heroku ps:scale web=0 -a react-app-jenkins
-                '''
+                // Start the application in Heroku
+                sh 'heroku ps:scale web=1 -a react-app-jenkins'
+
+                // Pause the pipeline execution for 1 minute
+                sh 'sleep 60'
+
+                // After waiting for 1 minute, stop the application in Heroku
+                sh 'heroku ps:scale web=0 -a react-app-jenkins'
             }
         }
     }
